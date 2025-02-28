@@ -8,10 +8,33 @@ load_dotenv()  # Cargar variables del archivo .env
 URI = os.getenv("NEO4J_URI")
 USER = "neo4j"
 CONTRA = os.getenv("NEO4J_PASSWORD")
+# CONTRA1 = os.getenv("c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E")
+
 
 
 def main():
-    pass 
+    opcion = 1
+    while opcion >= 1 and  opcion <=6:
+        print('*'*100)
+        print('\n \n1.Cargar Data \n2. \n3. \n4. \n5. \n6. \n \n \n')
+        if opcion == 1:
+            try:
+                cargarDatos()
+                print("Datos cargados")
+            except Exception as e:
+                print("Error al cargar los datos: ", e)
+
+        elif opcion == 2:
+            pass
+        elif opcion == 3:
+            pass
+        elif opcion == 4:
+            pass
+        elif opcion == 5:
+            pass
+        elif opcion == 6:
+            pass
+ 
 
 
 # funcion para cargar los datos del csv
@@ -109,9 +132,10 @@ def insert_evento(tx, row):
     """
     tx.run(query, **row)
 
-# cargarCSV(insert_publicacion, "./data/publicacion.csv")
-# cargarCSV(insert_mensaje, "./data/mensaje.csv")
-# cargarCSV(insert_comentario, "./data/comentario.csv")
-# cargarCSV(insert_evento, "./data/evento.csv")
-# cargarCSV(insert_grupo, "./data/grupos.csv")
-# cargarCSV(insert_historia, "./data//historias.csv")
+def cargarDatos():
+    cargarCSV(insert_publicacion, "./data/publicacion.csv")
+    cargarCSV(insert_mensaje, "./data/mensaje.csv")
+    cargarCSV(insert_comentario, "./data/comentario.csv")
+    cargarCSV(insert_evento, "./data/evento.csv")
+    cargarCSV(insert_grupo, "./data/grupos.csv")
+    cargarCSV(insert_historia, "./data/historias.csv")
