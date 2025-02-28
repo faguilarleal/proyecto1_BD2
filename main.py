@@ -30,10 +30,19 @@ def cargarCSV(function, csv_file):
     print("Importación completada.")
 
 # funcion para crear los nodos con querys 
-def insert_publicacion(tx, row):
+def insert_usuario(tx, row):
     # crear usuarios 
-    # query = "MERGE (u:Usuario {username: $username}) SET u.correo = $correo, u.nombre = $nombre, u.detalles = $detalles, u.foto_perfil = $foto_perfil, u.edad = $edad,u.genero = $genero,u.fecha_nacimiento = ($fecha_nacimiento);"
-    # tx.run(query, username=row['username'], correo=row['correo'], nombre=row['nombre'], detalles=row['detalles'], foto_perfil=row['foto'], edad=row['edad'], genero=row['genero'], fecha_nacimiento=row['fecha_nacimiento'])
+    query = """
+    MERGE (u:Usuario {username: $username}) 
+    SET u.correo = $correo, 
+    u.nombre = $nombre, 
+    u.detalles = $detalles, 
+    u.foto_perfil = $foto_perfil, 
+    u.edad = $edad,u.genero = $genero,
+    u.fecha_nacimiento = ($fecha_nacimiento);"""
+    tx.run(query, username=row['username'], correo=row['correo'], nombre=row['nombre'], detalles=row['detalles'], foto_perfil=row['foto'], edad=row['edad'], genero=row['genero'], fecha_nacimiento=row['fecha_nacimiento'])
+
+def insert_publicacion(tx, row):
     query = """
     MERGE (p:Publicacion {id_publicacion: $id_publicacion})
     SET p.likes = $likes, 
@@ -74,7 +83,8 @@ def insert_grupo(tx, row):
     SET g.nombre = $nombre, 
         g.descripcion = $descripcion, 
         g.visibilidad = $visibilidad, 
-        g.archivos = $archivos;
+        g.archivos = $archivos, 
+        g.eventos = $eventos;
     """
     tx.run(query, **row)
 
@@ -83,7 +93,7 @@ def insert_mensaje(tx, row):
     MERGE (m:Mensaje {id_mensaje: $id_mensaje})
     SET m.contenido = $contenido, 
         m.fecha = ($fecha), 
-        m.archivos = $archivos, 
+        m.hora = $hora, 
         m.receptor = $receptor;
     """
     tx.run(query, **row)
@@ -92,16 +102,16 @@ def insert_evento(tx, row):
     query = """
     MERGE (e:Evento {id_evento: $id_evento})
     SET e.nombre = $nombre, 
-        e.fecha_hora = ($fecha_hora), 
+        e.fecha_hora = ($fecha), 
         e.modalidad = $modalidad, 
         e.visibilidad = $visibilidad, 
         e.detalle = $detalle;
     """
     tx.run(query, **row)
 
-cargarCSV(insert_publicacion, "C://Users//Francis//OneDrive - UVG//Francis//2025//Base de datos 2//proyecto1_BD2//data//publicacion.csv")
-cargarCSV(insert_mensaje, "C://Users//Francis//OneDrive - UVG//Francis//2025//Base de datos 2//proyecto1_BD2//data//mensaje.csv")
-cargarCSV(insert_comentario, "C://Users//Francis//OneDrive - UVG//Francis//2025//Base de datos 2//proyecto1_BD2//data//comentario.csv")
-cargarCSV(insert_evento, "C://Users//Francis//OneDrive - UVG//Francis//2025//Base de datos 2//proyecto1_BD2//data//evento.csv")
-cargarCSV(insert_grupo, "C://Users//Francis//OneDrive - UVG//Francis//2025//Base de datos 2//proyecto1_BD2//data//grupos.csv")
-cargarCSV(insert_historia, "C://Users//Francis//OneDrive - UVG//Francis//2025//Base de datos 2//proyecto1_BD2//data//historias.csv")
+# cargarCSV(insert_publicacion, "./data/publicacion.csv")
+# cargarCSV(insert_mensaje, "./data/mensaje.csv")
+# cargarCSV(insert_comentario, "./data/comentario.csv")
+# cargarCSV(insert_evento, "./data/evento.csv")
+# cargarCSV(insert_grupo, "./data/grupos.csv")
+# cargarCSV(insert_historia, "./data//historias.csv")

@@ -1,4 +1,4 @@
-id_grupo,nombre,descripción,visibilidad,archivos,eventos
+id_grupo,nombre,descripcion,visibilidad,archivos,eventos
 1,Fitness Fanatics,Join us for discussions on various topics.,secret,video/avi,1
 2,Fitness Fanatics,Share your thoughts and connect with like-minded individuals.,private,video/mpeg,2
 3,Bookworms Club,Share your thoughts and connect with like-minded individuals.,private,text/plain,3
