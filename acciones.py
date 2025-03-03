@@ -1,24 +1,24 @@
 # CRUD
 
-# CREATE 
+#----- CREATE 
 def crearUsuario():
     pass
 
 def crearPost():
     pass
 
-# READ 
+#----- READ 
 def verSeguidores():
     pass
 
 def verEventos():
     pass
 
-# ACTUALIZAR
+#----- ACTUALIZAR
 def actualizarInfo():
     pass
 
-# ELIMINAR
+#------ ELIMINAR
 def dejardeSeguir():
     pass
 

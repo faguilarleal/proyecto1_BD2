@@ -2,21 +2,27 @@ from neo4j import GraphDatabase, Neo4jDriver
 from dotenv import load_dotenv
 import os
 import pandas as pd
+from insert import * 
+import random
 
 load_dotenv()  # Cargar variables del archivo .env
+
 
 URI = os.getenv("NEO4J_URI")
 USER = "neo4j"
 CONTRA = os.getenv("NEO4J_PASSWORD")
-# CONTRA1 = os.getenv("c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E")
+#----
+# URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
+# CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
 
-
+users = None
 
 def main():
-    opcion = 1
-    while opcion >= 1 and  opcion <=6:
+
+    while True:
         print('*'*100)
-        print('\n \n1.Cargar Data \n2. \n3. \n4. \n5. \n6. \n \n \n')
+        print('\n \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. \n5. \n6. salir\n \n \n')
+        opcion = int(input("Ingrese una opción: "))
         if opcion == 1:
             try:
                 cargarDatos()
@@ -25,7 +31,12 @@ def main():
                 print("Error al cargar los datos: ", e)
 
         elif opcion == 2:
-            pass
+            try:
+                etiquetas_random()
+                print("etiquetas creadas")
+            except Exception as e:
+                print("Error al crear las etiquetas: ", e)
+
         elif opcion == 3:
             pass
         elif opcion == 4:
@@ -33,18 +44,38 @@ def main():
         elif opcion == 5:
             pass
         elif opcion == 6:
-            pass
+            break;
  
 
 
 # funcion para cargar los datos del csv
 def cargarCSV(function, csv_file):
     df = pd.read_csv(csv_file)
+    global users
+
+    if csv_file == "./data/users.csv":
+        users = df['username']
+
+    #esto es porque cuando se creo la data, se nos fue una de default que es la de email y esa esta extra
+    elif csv_file == "./data/historias.csv":
+        df = df.drop('email', axis=1)
+
+    #esto es porque al generar la data en mookaroo se generaron users que no se repetian
+    elif csv_file == "./data/mensaje.csv" or csv_file == './data/comentario.csv':
+        if users is not None:  
+            # print('-'*100)
+            df["username"] = users
+            # print(df.head())
+        else:
+            print("error users no se ha cargado desde users.csv")
+            return 
+   
     
     driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
     print("Successfully connected to Neo4j")
+    print('Cargando datos...')
     
-    # Insertar datos
+    #Insertar datos
     with driver.session() as session:
         for _, row in df.iterrows():
             session.execute_write(function, row)
@@ -52,90 +83,46 @@ def cargarCSV(function, csv_file):
     driver.close()
     print("Importación completada.")
 
-# funcion para crear los nodos con querys 
-def insert_usuario(tx, row):
-    # crear usuarios 
-    query = """
-    MERGE (u:Usuario {username: $username}) 
-    SET u.correo = $correo, 
-    u.nombre = $nombre, 
-    u.detalles = $detalles, 
-    u.foto_perfil = $foto_perfil, 
-    u.edad = $edad,u.genero = $genero,
-    u.fecha_nacimiento = ($fecha_nacimiento);"""
-    tx.run(query, username=row['username'], correo=row['correo'], nombre=row['nombre'], detalles=row['detalles'], foto_perfil=row['foto'], edad=row['edad'], genero=row['genero'], fecha_nacimiento=row['fecha_nacimiento'])
 
-def insert_publicacion(tx, row):
-    query = """
-    MERGE (p:Publicacion {id_publicacion: $id_publicacion})
-    SET p.likes = $likes, 
-        p.etiquetas = $etiquetas, 
-        p.sentimiento_actividad = $sentimiento, 
-        p.descripcion = $descripcion, 
-        p.musica = $musica, 
-        p.foto_video = $foto, 
-        p.visibilidad = $visibilidad;
-    """
-    tx.run(query, **row)
+def etiquetas_random():
+    #asignar etiquetas a uno o mas usuarios
+    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
 
-def insert_comentario(tx, row):
-    query = """
-    MERGE (c:Comentario {id_comentario: $id_comentario})
-    SET c.fecha = ($fecha), 
-        c.username = $username, 
-        c.texto = $texto, 
-        c.media = $foto;
-    """
-    tx.run(query, **row)
+    with driver.session() as session:
+        #etiquetas a usuarios
+        result_users = session.run("MATCH (u:Usuario) RETURN u.username as username")
+        usernames = [record["username"] for record in result_users]
 
+        usuarios_random = random.sample(usernames, min(667), len(usernames))
 
-def insert_historia(tx, row):
-    query = """
-    MERGE (h:Historia {id_historia: $id_historia})
-    SET h.imagen_video = $Imagen, 
-        h.texto = $texto, 
-        h.username = $username, 
-        h.username = $username, 
-        h.musica = $musica;
-    """
-    tx.run(query, **row)
+        for username in usuarios_random:
+            etiqueta= random.choice(['Emprendimiento', 'CreadorDeContenido'])
+            session.run("MATCH (u:Usuario) WHERE u.Username = $username SET u:" + etiqueta, username=username)
 
-def insert_grupo(tx, row):
-    query = """
-    MERGE (g:Grupo {id_grupo: $id_grupo})
-    SET g.nombre = $nombre, 
-        g.descripcion = $descripcion, 
-        g.visibilidad = $visibilidad, 
-        g.archivos = $archivos, 
-        g.eventos = $eventos;
-    """
-    tx.run(query, **row)
+        #etiquetas a publicaciones
+        result_publicaciones = session.run("MATCH (p:Publicacion) RETURN p.id_publicacion as id_publicacion")
+        publicaciones = [record["id_publicacion"] for record in result_publicaciones]
+        publicaciones_random = random.sample(publicaciones, min(500), len(publicaciones))
 
-def insert_mensaje(tx, row):
-    query = """
-    MERGE (m:Mensaje {id_mensaje: $id_mensaje})
-    SET m.contenido = $contenido, 
-        m.fecha = ($fecha), 
-        m.hora = $hora, 
-        m.receptor = $receptor;
-    """
-    tx.run(query, **row)
+        for publicacion in publicaciones_random:
+            etiqueta= random.choice(['foto/video/GIF', 'Texto'])
+            session.run("MATCH (p:Publicacion) WHERE p.id_publicacion = $publicacion SET p:" + etiqueta, publicacion=publicacion)
 
-def insert_evento(tx, row):
-    query = """
-    MERGE (e:Evento {id_evento: $id_evento})
-    SET e.nombre = $nombre, 
-        e.fecha_hora = ($fecha), 
-        e.modalidad = $modalidad, 
-        e.visibilidad = $visibilidad, 
-        e.detalle = $detalle;
-    """
-    tx.run(query, **row)
+    driver.close()
+    print("Etiquetas añadidas correctamente.")
+    
+
+def CargarUsers():
+    cargarCSV(insert_usuario, "./data/users.csv")
+    print('usuarios correctamente cargados')
 
 def cargarDatos():
+    CargarUsers()
     cargarCSV(insert_publicacion, "./data/publicacion.csv")
     cargarCSV(insert_mensaje, "./data/mensaje.csv")
     cargarCSV(insert_comentario, "./data/comentario.csv")
     cargarCSV(insert_evento, "./data/evento.csv")
     cargarCSV(insert_grupo, "./data/grupos.csv")
     cargarCSV(insert_historia, "./data/historias.csv")
+
+main()
