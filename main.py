@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from insert import * 
 import random
+from relaciones import *
 
 load_dotenv()  # Cargar variables del archivo .env
 
@@ -11,7 +12,7 @@ load_dotenv()  # Cargar variables del archivo .env
 URI = os.getenv("NEO4J_URI")
 USER = "neo4j"
 CONTRA = os.getenv("NEO4J_PASSWORD")
-#----
+#--
 # URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
 # CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
 
@@ -38,7 +39,10 @@ def main():
                 print("Error al crear las etiquetas: ", e)
 
         elif opcion == 3:
-            pass
+            try: 
+                crearRelaicones()
+            except Exception as e:
+                print("Error al crear las relaciones: ", e)
         elif opcion == 4:
             pass
         elif opcion == 5:
@@ -93,24 +97,42 @@ def etiquetas_random():
         result_users = session.run("MATCH (u:Usuario) RETURN u.username as username")
         usernames = [record["username"] for record in result_users]
 
-        usuarios_random = random.sample(usernames, min(667), len(usernames))
+        usuarios_random = random.sample(usernames, min(667, len(usernames)))
 
         for username in usuarios_random:
             etiqueta= random.choice(['Emprendimiento', 'CreadorDeContenido'])
-            session.run("MATCH (u:Usuario) WHERE u.Username = $username SET u:" + etiqueta, username=username)
+            session.run("MATCH (u:Usuario) WHERE u.username = $username SET u:" + etiqueta, username=username)
 
         #etiquetas a publicaciones
         result_publicaciones = session.run("MATCH (p:Publicacion) RETURN p.id_publicacion as id_publicacion")
         publicaciones = [record["id_publicacion"] for record in result_publicaciones]
-        publicaciones_random = random.sample(publicaciones, min(500), len(publicaciones))
+        publicaciones_random = random.sample(publicaciones, min(500, len(publicaciones)))
+
 
         for publicacion in publicaciones_random:
-            etiqueta= random.choice(['foto/video/GIF', 'Texto'])
+            etiqueta= random.choice(['foto', 'video' , 'GIF', 'Texto'])
             session.run("MATCH (p:Publicacion) WHERE p.id_publicacion = $publicacion SET p:" + etiqueta, publicacion=publicacion)
 
     driver.close()
     print("Etiquetas añadidas correctamente.")
     
+
+def crearRelaicones():
+    #asignar etiquetas a uno o mas usuarios
+    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+
+    with driver.session() as session:
+        usuario_sigue_usuario(session)
+        usuario_solicita_amistad_usuario(session)
+        usuario_es_amigo_de_usuario(session)
+        usuario_bloquea_usuario(session)
+        usuario_reporta_usuario(session)
+        usuario_menciona_usuario(session)
+        usuario_reporta_publicacion(session)
+        usuario_reporta_comentario(session)
+
+    driver.close()
+    print("relaciones añadidas correctamente.")
 
 def CargarUsers():
     cargarCSV(insert_usuario, "./data/users.csv")
