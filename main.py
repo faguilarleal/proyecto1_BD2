@@ -9,12 +9,12 @@ from relaciones import *
 load_dotenv()  # Cargar variables del archivo .env
 
 
-URI = os.getenv("NEO4J_URI")
+# URI = os.getenv("NEO4J_URI")
 USER = "neo4j"
-CONTRA = os.getenv("NEO4J_PASSWORD")
+# CONTRA = os.getenv("NEO4J_PASSWORD")
 #--
-# URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
-# CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
+URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
+CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
 
 users = None
 
@@ -22,7 +22,7 @@ def main():
 
     while True:
         print('*'*100)
-        print('\n \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. \n5. \n6. salir\n \n \n')
+        print('\n \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Post \n7.ver seguidores\n8. ver eventos \n9. actualizar Info \n10. dejar de seguir \n11. eliminar cuenta \n12. salir  \n')
         opcion = int(input("Ingrese una opción: "))
         if opcion == 1:
             try:
@@ -48,6 +48,18 @@ def main():
         elif opcion == 5:
             pass
         elif opcion == 6:
+            pass
+        elif opcion == 7:
+            pass
+        elif opcion == 8:
+            pass
+        elif opcion == 9:
+            pass
+        elif opcion == 10:
+            pass
+        elif opcion == 11:
+            pass
+        elif opcion == 12:
             break;
  
 
