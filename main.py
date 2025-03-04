@@ -16,16 +16,21 @@ USER = "neo4j"
 #--
 URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
 CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
-driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
-session = driver.session()
+# driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+# session = driver.session()
 users = None
 usuario = None
 
 def main():
 
     while True:
+        global usuario
+        print('\n')
         print('*'*100)
-        print('\n \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Post \n7.ver seguidores\n8. ver eventos \n9. actualizar Info \n10. dejar de seguir \n11. eliminar cuenta \n12. salir  \n')
+        print('* Bienvenido a Facebook Lite') 
+        print('*'*100)
+
+        print('\nEscoga una opcion \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Post \n7. ver seguidores\n8. ver eventos \n9. actualizar Info \n10. dejar de seguir \n11. eliminar cuenta \n12. ver seguidos \n13. cerrar sesion  \n14. salir')
         opcion = int(input("Ingrese una opción: "))
         if opcion == 1:
             try:
@@ -46,24 +51,65 @@ def main():
                 crearRelaicones()
             except Exception as e:
                 print("Error al crear las relaciones: ", e)
+
         elif opcion == 4:
-            iniciarSesion(session)
-        elif opcion == 5:
-            crearUsuario(session)
-        elif opcion == 6:
-            crearPost(session)
-        elif opcion == 7:
-            verSeguidores(session)
-        elif opcion == 8:
-            verEventos(session)
-        elif opcion == 9:
-            actualizarInfo(session)
-        elif opcion == 10:
-            dejardeSeguir(session)
-        elif opcion == 11:
-            eliminarCuenta(session)
-        elif opcion == 12:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            user = iniciarSesion(session)
+            usuario = user
             driver.close()
+
+        elif opcion == 5:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            user = crearUsuario(session)
+            usuario = user
+
+        elif opcion == 6:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            crearPost(session)
+
+        elif opcion == 7:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            verSeguidores(session, usuario)
+            driver.close()
+
+        elif opcion == 8:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            verEventos(session)
+            driver.close()
+
+        elif opcion == 9:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            actualizarInfo(session)
+            driver.close()
+
+        elif opcion == 10:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            dejardeSeguir(session, usuario)
+            driver.close()
+
+        elif opcion == 11:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            eliminarCuenta(session)
+            driver.close()
+
+        elif opcion == 12:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            verSeguidos(session, usuario)
+            driver.close()
+
+        elif opcion == 13:
+            usuario = None
+
+        elif opcion == 14:
             break;
  
 
@@ -90,7 +136,7 @@ def cargarCSV(function, csv_file):
             print("error users no se ha cargado desde users.csv")
             return 
    
-    
+    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
     print("Successfully connected to Neo4j")
     print('Cargando datos...')
     
@@ -99,10 +145,12 @@ def cargarCSV(function, csv_file):
         for _, row in df.iterrows():
             session.execute_write(function, row)
 
+    driver.close()
     print("Importación completada.")
 
 
 def etiquetas_random():
+    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
     #asignar etiquetas a uno o mas usuarios
     with driver.session() as session:
         #etiquetas a usuarios
@@ -125,11 +173,13 @@ def etiquetas_random():
             etiqueta= random.choice(['foto', 'video' , 'GIF', 'Texto'])
             session.run("MATCH (p:Publicacion) WHERE p.id_publicacion = $publicacion SET p:" + etiqueta, publicacion=publicacion)
 
+    driver.close()
     print("Etiquetas añadidas correctamente.")
     
 
 def crearRelaicones():
     #asignar etiquetas a uno o mas usuarios
+    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
 
     with driver.session() as session:
         usuario_sigue_usuario(session)
@@ -141,6 +191,7 @@ def crearRelaicones():
         usuario_reporta_publicacion(session)
         usuario_reporta_comentario(session)
 
+    driver.close()
     print("relaciones añadidas correctamente.")
 
 def CargarUsers():
