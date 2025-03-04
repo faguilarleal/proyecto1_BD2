@@ -29,7 +29,7 @@ def iniciarSesion(DriverSession):
     return None
 
 #----- CREATE 
-def crearUsuario(DriverSession):
+def crearUsuario(DriverSession, b):
     usuario = input("Ingrese su nombre de usuario: ")
     
     #verificar que el username no exista
@@ -49,8 +49,8 @@ def crearUsuario(DriverSession):
                 edad = datetime.now().year - fecha_nacimiento.year
                 password = input("Ingrese su contraseña: ")
                 
-                query = """
-                        MERGE (u:Usuario {username: $username}) 
+                query1 = """
+                        CREATE (u:Usuario {username: $username}) 
                         SET u.correo = $correo, 
                         u.nombre = $nombre, 
                         u.detalles = $detalles, 
@@ -60,8 +60,22 @@ def crearUsuario(DriverSession):
                         u.fecha_nacimiento = ($fecha_nacimiento),
                         u.password = $password;
                         """
-                
-                session.run(query, username=usuario, correo=correo, nombre=nombre, detalles=detalles, foto_perfil=foto, edad=edad, genero=genero, fecha_nacimiento=fecha_nacimiento, password=password)
+                query2 = """
+                        CREATE (u:Usuario:Emprendimiento {username: $username}) 
+                        SET u.correo = $correo, 
+                        u.nombre = $nombre, 
+                        u.detalles = $detalles, 
+                        u.foto_perfil = $foto_perfil, 
+                        u.edad = $edad,
+                        u.genero = $genero,
+                        u.fecha_nacimiento = ($fecha_nacimiento),
+                        u.password = $password;
+                        """
+                if (b == "Y"):
+                    session.run(query2, username=usuario, correo=correo, nombre=nombre, detalles=detalles, foto_perfil=foto, edad=edad, genero=genero, fecha_nacimiento=fecha_nacimiento, password=password)
+                else:
+                    session.run(query1, username=usuario, correo=correo, nombre=nombre, detalles=detalles, foto_perfil=foto, edad=edad, genero=genero, fecha_nacimiento=fecha_nacimiento, password=password)
+
                 print("Bienvenido a facebook " + nombre + " !\n")
 
                 return usuario

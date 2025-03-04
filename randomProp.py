@@ -1,12 +1,17 @@
 import random 
 
 def escoger_usuarios_random(session):
-
     usuarios = session.run("MATCH (u:Usuario) RETURN u.username as username")
     usernames = [record['username'] for record in usuarios]
 
-    usuarios_random = random.sample(usernames, min(5, len(usernames)))
+    usuarios_random = random.sample(usernames, min(random.randint(1, 5), len(usernames)))
     return usuarios_random
+
+def escoger_un_usuario_random(session):
+    usuarios = session.run("MATCH (u:Usuario) RETURN u.username as username")
+    usernames = [record['username'] for record in usuarios]
+    usuario_random = random.choice(usernames)
+    return usuario_random
 
 def escoger_publicacion_random(session):
     
@@ -15,6 +20,14 @@ def escoger_publicacion_random(session):
 
     publicaciones_random = random.sample(publicaciones, min(2, len(publicaciones)))
     return publicaciones_random
+
+def escoger_una_publicacion_random(session):
+    
+    publicaciones = session.run("MATCH (p:Publicacion) RETURN p.id_publicacion as id_publicacion")
+    publicaciones = [record['id_publicacion'] for record in publicaciones]
+    publicaciones_random = random.choice(publicaciones)
+    return publicaciones_random
+
 
 def escoger_comentarios_random(session):
     
@@ -65,6 +78,12 @@ def estado_bloqueo_random():
     estado = random.choice(estados)
     return estado
 
+
+def tipo_rol():
+    estados = ['Admin', 'Miembro', 'Moderador']
+    estado = random.choice(estados)
+    return estado
+
 def comentarios_reporte_random():
     comentarios = ['Espero que no vuelva a pasar', 'Por favor, no vuelvas a hacerlo', 'No me gusta lo que haces', 'No me gusta tu actitud']
     comentario = random.choice(comentarios)
@@ -84,3 +103,31 @@ def comentario_random():
     comentarios = ['Me encanta', 'No me gusta', 'Está bien', 'Está mal', 'No me parece']
     comentario = random.choice(comentarios)
     return comentario
+
+def contenido_random():
+    contenidos = [
+        'Este es un contenido interesante.',
+        'No te pierdas esto.',
+        'Contenido exclusivo para ti.',
+        'Mira lo que encontré.',
+        'Esto es increíble.',
+        'No puedo creer esto.',
+        'Esto es muy útil.',
+        'Espero que te guste esto.'
+    ]
+    contenido = random.choice(contenidos)
+    return contenido
+
+def estado_mensaje_random():
+    estados = ['Enviado', 'pendiente', 'leido']
+    estado = random.choice(estados)
+    return estado
+
+def tipo_random():
+    estados = ['Imagen', 'Texto', 'Video']
+    estado = random.choice(estados)
+    return estado
+
+
+def tipo_reaccion_random():
+    pass

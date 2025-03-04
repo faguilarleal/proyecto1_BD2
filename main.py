@@ -10,12 +10,12 @@ from acciones import *
 load_dotenv()  # Cargar variables del archivo .env
 
 
-# URI = os.getenv("NEO4J_URI")
 USER = "neo4j"
-# CONTRA = os.getenv("NEO4J_PASSWORD")
+URI = os.getenv("NEO4J_URI")
+CONTRA = os.getenv("NEO4J_PASSWORD")
 #--
-URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
-CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
+# URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
+# CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
 # driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
 # session = driver.session()
 users = None
@@ -62,7 +62,8 @@ def main():
         elif opcion == 5:
             driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
             session = driver.session()
-            user = crearUsuario(session)
+            emprendimiento = preguntar()
+            user = crearUsuario(session, emprendimiento)
             usuario = user
 
         elif opcion == 6:
@@ -110,15 +111,18 @@ def main():
             usuario = None
 
         elif opcion == 14:
-            break;
+            break
  
 
 
+def preguntar():
+    print("Es un emprendimiento? (Y/N)")
+    return (input())
 # funcion para cargar los datos del csv
 def cargarCSV(function, csv_file):
     df = pd.read_csv(csv_file)
     global users
-
+    
     if csv_file == "./data/users.csv":
         users = df['username']
 
@@ -182,14 +186,22 @@ def crearRelaicones():
     driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
 
     with driver.session() as session:
-        usuario_sigue_usuario(session)
-        usuario_solicita_amistad_usuario(session)
-        usuario_es_amigo_de_usuario(session)
-        usuario_bloquea_usuario(session)
-        usuario_reporta_usuario(session)
-        usuario_menciona_usuario(session)
-        usuario_reporta_publicacion(session)
-        usuario_reporta_comentario(session)
+        # usuario_sigue_usuario(session)
+        # usuario_solicita_amistad_usuario(session)
+        # usuario_es_amigo_de_usuario(session)
+        # usuario_bloquea_usuario(session)
+        # usuario_reporta_usuario(session)
+        # usuario_menciona_usuario(session)
+        # usuario_reporta_publicacion(session)
+        # usuario_reporta_comentario(session)
+        # usuario_publica_publicacion(session)
+        # usuario_publica_historia(session)
+        # usuario_comparte_publicacion(session)
+        # usuario_envia_mensaje(session)
+        # usuario_comenta_comentario(session)
+        # comentario_pertenece_publicacion(session)
+        usuario_pertenece_grupo(session)
+        usuario_pertenece_evento(session)
 
     driver.close()
     print("relaciones añadidas correctamente.")
@@ -200,11 +212,11 @@ def CargarUsers():
 
 def cargarDatos():
     CargarUsers()
-    cargarCSV(insert_publicacion, "./data/publicacion.csv")
-    cargarCSV(insert_mensaje, "./data/mensaje.csv")
+    # cargarCSV(insert_publicacion, "./data/publicacion.csv")
+    # cargarCSV(insert_mensaje, "./data/mensaje.csv")
     cargarCSV(insert_comentario, "./data/comentario.csv")
-    cargarCSV(insert_evento, "./data/evento.csv")
-    cargarCSV(insert_grupo, "./data/grupos.csv")
-    cargarCSV(insert_historia, "./data/historias.csv")
+    # cargarCSV(insert_evento, "./data/evento.csv")
+    # cargarCSV(insert_grupo, "./data/grupos.csv")
+    # cargarCSV(insert_historia, "./data/historias.csv")
 
 main()
