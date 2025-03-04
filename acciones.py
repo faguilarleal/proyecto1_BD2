@@ -1,38 +1,46 @@
 # CRUD
-
-def iniciarSesion(session):
+def iniciarSesion(DriverSession):
+    
     usuario = input("Ingrese su nombre de usuario: ")
-    contrasenia = input("Ingrese su contraseña: ")
+    password = input("Ingrese su contraseña: ")
     # Verificar si el usuario y contraseña son válidos
-    usuarios =session.run("MATCH (u:Usuario) RETURN u.username as username")
 
-    if usuario in usuarios:
-        print("Inicio de sesión exitoso")
-    else:
-        print("Usuario o contraseña incorrectos")
-
+    #aledwithg
+    #iX2`Q{aa!|iDu
+    with DriverSession as session:
+        query = "MATCH (u:Usuario {nombre: $nombre, password: $password}) RETURN u.nombre as nombre"
+        resultado = session.run(query, nombre=usuario, password=password)
+        
+        if resultado:
+            print("Bienvenido, " + usuario)
+            return usuario
+        else:
+            print("Usuario o contraseña incorrectos")
+            return None
+        
+    return None
 
 #----- CREATE 
-def crearUsuario(session):
+def crearUsuario(DriverSession):
     pass
 
-def crearPost(session, usuario):
+def crearPost(DriverSession, usuario):
     pass
 
 #----- READ 
-def verSeguidores(session, usuario):
+def verSeguidores(DriverSession, usuario):
     pass
 
-def verEventos(session, usuario):
+def verEventos(DriverSession, usuario):
     pass
 
 #----- ACTUALIZAR
-def actualizarInfo(session, usuario):
+def actualizarInfo(DriverSession, usuario):
     pass
 
 #------ ELIMINAR
-def dejardeSeguir(session, usuario):
+def dejardeSeguir(DriverSession, usuario):
     pass
 
-def eliminarCuenta(session, usuario):
+def eliminarCuenta(DriverSession, usuario):
     pass

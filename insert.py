@@ -7,9 +7,12 @@ def insert_usuario(tx, row):
     u.nombre = $nombre, 
     u.detalles = $detalles, 
     u.foto_perfil = $foto_perfil, 
-    u.edad = $edad,u.genero = $genero,
-    u.fecha_nacimiento = ($fecha_nacimiento);"""
-    tx.run(query, username=row['username'], correo=row['correo'], nombre=row['nombre'], detalles=row['detalles'], foto_perfil=row['foto'], edad=row['edad'], genero=row['genero'], fecha_nacimiento=row['fecha_nacimiento'])
+    u.edad = $edad,
+    u.genero = $genero,
+    u.fecha_nacimiento = ($fecha_nacimiento),
+    u.password = $password;
+    """
+    tx.run(query, username=row['username'], correo=row['correo'], nombre=row['nombre'], detalles=row['detalles'], foto_perfil=row['foto'], edad=row['edad'], genero=row['genero'], fecha_nacimiento=row['fecha_nacimiento'], password=row['password'])
 
 def insert_publicacion(tx, row):
     query = """

@@ -5,6 +5,7 @@ import pandas as pd
 from insert import * 
 import random
 from relaciones import *
+from acciones import *
 
 load_dotenv()  # Cargar variables del archivo .env
 
@@ -15,8 +16,10 @@ USER = "neo4j"
 #--
 URI ="neo4j+s://e5e3ecfb.databases.neo4j.io"
 CONTRA = "c-GmqdjUkPD1QKFXIPL2gs9NEaOurpM82owa9LQ5f0E"
-
+driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+session = driver.session()
 users = None
+usuario = None
 
 def main():
 
@@ -44,22 +47,23 @@ def main():
             except Exception as e:
                 print("Error al crear las relaciones: ", e)
         elif opcion == 4:
-            pass
+            iniciarSesion(session)
         elif opcion == 5:
-            pass
+            crearUsuario(session)
         elif opcion == 6:
-            pass
+            crearPost(session)
         elif opcion == 7:
-            pass
+            verSeguidores(session)
         elif opcion == 8:
-            pass
+            verEventos(session)
         elif opcion == 9:
-            pass
+            actualizarInfo(session)
         elif opcion == 10:
-            pass
+            dejardeSeguir(session)
         elif opcion == 11:
-            pass
+            eliminarCuenta(session)
         elif opcion == 12:
+            driver.close()
             break;
  
 
@@ -87,7 +91,6 @@ def cargarCSV(function, csv_file):
             return 
    
     
-    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
     print("Successfully connected to Neo4j")
     print('Cargando datos...')
     
@@ -96,14 +99,11 @@ def cargarCSV(function, csv_file):
         for _, row in df.iterrows():
             session.execute_write(function, row)
 
-    driver.close()
     print("Importación completada.")
 
 
 def etiquetas_random():
     #asignar etiquetas a uno o mas usuarios
-    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
-
     with driver.session() as session:
         #etiquetas a usuarios
         result_users = session.run("MATCH (u:Usuario) RETURN u.username as username")
@@ -125,13 +125,11 @@ def etiquetas_random():
             etiqueta= random.choice(['foto', 'video' , 'GIF', 'Texto'])
             session.run("MATCH (p:Publicacion) WHERE p.id_publicacion = $publicacion SET p:" + etiqueta, publicacion=publicacion)
 
-    driver.close()
     print("Etiquetas añadidas correctamente.")
     
 
 def crearRelaicones():
     #asignar etiquetas a uno o mas usuarios
-    driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
 
     with driver.session() as session:
         usuario_sigue_usuario(session)
@@ -143,7 +141,6 @@ def crearRelaicones():
         usuario_reporta_publicacion(session)
         usuario_reporta_comentario(session)
 
-    driver.close()
     print("relaciones añadidas correctamente.")
 
 def CargarUsers():
