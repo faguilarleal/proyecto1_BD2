@@ -6,7 +6,7 @@ from insert import *
 import random
 from relaciones import *
 from acciones import *
-
+from relaciones_e import *
 load_dotenv()  # Cargar variables del archivo .env
 
 
@@ -30,7 +30,7 @@ def main():
         print('* Bienvenido a Facebook Lite') 
         print('*'*100)
 
-        print('\nEscoga una opcion \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Evento \n7. ver seguidores\n8. Ver info de mi perfil \n9 Actualizar detalles de mi perfil \n10. dejar de seguir \n11. eliminar cuenta \n12. ver seguidos \n13. cerrar sesion  \n15. Seguir a alguien \n16. Agregar una etiqueta a varios eventos\n17. Hacer publicaciones privadas\n18. Borrar descripcion')
+        print('\nEscoga una opcion \n0. salir \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Evento \n7. ver seguidores\n8. Ver info de mi perfil \n9 Actualizar detalles de mi perfil \n10. dejar de seguir \n11. eliminar cuenta \n12. ver seguidos \n13. cerrar sesion  \n15. Seguir a alguien \n16. Agregar una etiqueta a varios eventos\n17. Hacer publicaciones privadas\n18. Borrar descripcion\n19. Agregar propiedades a relacion sigue\n20. eliminar publicacion\n21. Agregar propiedades a multiples relaciones sigue\n22. Actualizar propiedades a relacion sigue\n23. Actualizar propiedades a multiples relaciones sigue\n24. Eliminar propiedades a relacion sigue\n25. Eliminar propiedades a multiples relaciones sigue')
         opcion = int(input("Ingrese una opción: "))
         if opcion == 1:
             try:
@@ -150,8 +150,47 @@ def main():
             eliminarPublicacion(session, usuario)
             driver.close()
         
+        elif opcion == 21:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            agregar_propiedades_a_relacion_SIGUE(session, usuario)
+            driver.close()
+
+        elif opcion == 22:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            agregar_propiedades_a_multiples_relaciones_SIGUE(session, usuario)
+            driver.close()
+
+        elif opcion == 23:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            actualizar_propiedades_a_relacion_SIGUE(session, usuario)
+
+            driver.close()
+        elif opcion == 24:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            actualizar_propiedades_a_multiples_relaciones_SIGUE(session, usuario)
+
+            driver.close()
+
+        elif opcion == 25:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            eliminar_propiedades_a_relacion_SIGUE(session, usuario)
+            driver.close()
+
+        elif opcion == 26:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            eliminar_propiedades_a_multiples_relaciones_SIGUE(session, usuario)
+            driver.close()
+
+
         elif opcion == 0:
             break
+
  
 
 
