@@ -390,3 +390,13 @@ def eliminarCuenta(DriverSession, usuario):
         else:
             print("No se ha iniciado sesión para eliminar la cuenta del usuario.")
 
+def eliminarPublicacion(session, id_publicacion):
+    try:
+        query = """
+                MATCH (p:Publicacion {id_publicacion: $id_publicacion})
+                DETACH DELETE p
+                """
+        session.run(query, id_publicacion=id_publicacion)
+        print(f"Publicación con ID {id_publicacion} eliminada junto con todas sus relaciones.")
+    except Exception as e:
+        print("Error al eliminar la publicación: ", e)

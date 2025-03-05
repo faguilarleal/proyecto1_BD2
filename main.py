@@ -143,6 +143,12 @@ def main():
             session = driver.session()
             eliminarCuenta(session, usuario)
             driver.close()
+
+        elif opcion == 20:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            eliminarPublicacion(session, usuario)
+            driver.close()
         
         elif opcion == 0:
             break
