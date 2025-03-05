@@ -30,7 +30,7 @@ def main():
         print('* Bienvenido a Facebook Lite') 
         print('*'*100)
 
-        print('\nEscoga una opcion \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Post \n7. ver seguidores\n8. ver eventos \n9. actualizar Info \n10. dejar de seguir \n11. eliminar cuenta \n12. ver seguidos \n13. cerrar sesion  \n14. salir')
+        print('\nEscoga una opcion \n1. Cargar Data \n2. Etiquetar usuarios \n3. Crear Relaciones\n4. Iniciar sesion\n5. Crear Usuario \n6. Crear Evento \n7. ver seguidores\n8. Ver info de mi perfil \n9 Actualizar detalles de mi perfil \n10. dejar de seguir \n11. eliminar cuenta \n12. ver seguidos \n13. cerrar sesion  \n15. Seguir a alguien \n16. Agregar una etiqueta a varios eventos\n17. Hacer publicaciones privadas\n18. Borrar descripcion')
         opcion = int(input("Ingrese una opción: "))
         if opcion == 1:
             try:
@@ -69,7 +69,8 @@ def main():
         elif opcion == 6:
             driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
             session = driver.session()
-            crearPost(session)
+            # crearPost(session)
+            crearEvento(session)
 
         elif opcion == 7:
             driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
@@ -80,15 +81,17 @@ def main():
         elif opcion == 8:
             driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
             session = driver.session()
-            verEventos(session)
+            verMiInfo(session, usuario)
             driver.close()
 
+# actualizar detalles
         elif opcion == 9:
             driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
             session = driver.session()
-            actualizarInfo(session)
+            actualizarDetalles(session, usuario)
             driver.close()
 
+# dejar de seguir
         elif opcion == 10:
             driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
             session = driver.session()
@@ -110,7 +113,38 @@ def main():
         elif opcion == 13:
             usuario = None
 
-        elif opcion == 14:
+        elif opcion == 15:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            seguirAlguien(session, usuario)
+            driver.close()
+        
+        elif opcion == 16:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            agregarEtiqueta(session, usuario)
+            driver.close()
+
+        elif opcion == 17:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            PublicacionesPrivadas(session, usuario)
+            driver.close()
+
+        elif opcion == 18:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            borrarDescripcion(session, usuario)
+            driver.close()
+
+
+        elif opcion == 19:
+            driver = GraphDatabase.driver(URI, auth=(USER, CONTRA))
+            session = driver.session()
+            eliminarCuenta(session, usuario)
+            driver.close()
+        
+        elif opcion == 0:
             break
  
 
@@ -199,7 +233,7 @@ def crearRelaicones():
         # usuario_comparte_publicacion(session)
         # usuario_envia_mensaje(session)
         # usuario_comenta_comentario(session)
-        # comentario_pertenece_publicacion(session)
+        comentario_pertenece_publicacion(session)
         usuario_pertenece_grupo(session)
         usuario_pertenece_evento(session)
 
